@@ -11,6 +11,10 @@ const routes: Routes = [
     redirectTo: 'home',
     pathMatch: 'full'
   },
+  {
+    path: 'zoom-meeting',
+    loadChildren: () => import('./zoom-meeting/zoom-meeting.module').then( m => m.ZoomMeetingPageModule)
+  },
 ];
 
 @NgModule({

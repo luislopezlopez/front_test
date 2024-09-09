@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Crear Asamblea</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form (submit)="submitForm($event)">
+    <ion-item>
+      <ion-label>Agenda</ion-label>
+      <input type="file" (change)="onFileChange($event, 'agenda')" />
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Documentos</ion-label>
+      <input type="file" (change)="onFileChange($event, 'documents')" multiple />
+    </ion-item>
+
+    <ion-button expand="full" type="submit">Enviar Asamblea</ion-button>
+  </form>
+</ion-content>
+

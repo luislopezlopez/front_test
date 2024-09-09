@@ -15,6 +15,10 @@ const routes: Routes = [
     path: 'zoom-meeting',
     loadChildren: () => import('./zoom-meeting/zoom-meeting.module').then( m => m.ZoomMeetingPageModule)
   },
+  {
+    path: 'crear-asamblea',
+    loadChildren: () => import('./crear-asamblea/crear-asamblea.module').then( m => m.CrearAsambleaPageModule)
+  },
 ];
 
 @NgModule({

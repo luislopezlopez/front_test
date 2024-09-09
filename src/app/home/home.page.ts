@@ -13,12 +13,12 @@ export class HomePage implements OnInit {
   card: any;
   errorMessage!: string;
   successMessage!: string;
-  jwtToken: string  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NjdmMDJhZGVlYjUxODViMDBiN2NjYzYiLCJpYXQiOjE3MjMwMTIwNTQsImV4cCI6MTcyMzA3MjA1NH0._yXfySyWCpE1GN2U3giyUJ5VACBPV1-l3e3hGTyIOXs';
+  jwtToken: string  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NjdmMDJhZGVlYjUxODViMDBiN2NjYzYiLCJpYXQiOjE3MjU4NTUxNTUsImV4cCI6MTcyNTkxNTE1NX0.Xt39rcYUxEkUqNlhQZ5UCmw6YAmmLN0iSze25g3AUPM';
 
   constructor() {}
 
   ngOnInit() {
-    this.stripe = Stripe('pk_test_51OkaCSK2Vtvuir2UffweY8cjDfcwDaUzKz3PJBReZXHbXAZbFAjLI1lZSiEp19uEJ9dvYmxU62YBeFBst4rlaAKl00Yx8eCLGY');
+    this.stripe = Stripe('pk_test_51IaO4AERAnFdCDEdU9H1UI0mg6g15Z7D0AEFlDajTgu6EVSgyxss03Z8PeBvqsG4dL5UmEFkokLywK8CZqDYF7EP00QzgKxQUb');
     const elements = this.stripe.elements();
     this.card = elements.create('card');
     this.card.mount('#card-element');
@@ -70,10 +70,12 @@ export class HomePage implements OnInit {
   async processPayment(token: string) {
     try {
       // Obtener addressId si es necesario
-      const addressId = '6696be2b6f6aed639ef35bce';
+      const addressId = '66c900d53dc108ff3b951329';
   
       const body = {
         token: token,
+        paymentMethod: "stripe",
+        currency: 'MXN',
         ...(addressId && { addressId }) // Solo incluir addressId si está presente
       };
   
@@ -85,10 +87,8 @@ export class HomePage implements OnInit {
       });
   
       this.successMessage = 'Payment successful!';
-      console.log('Payment successful', response.data);
     } catch (error: any) {
       this.errorMessage = 'Payment failed';
-      console.error('Payment error', error.response.data);
     }
   }
 }

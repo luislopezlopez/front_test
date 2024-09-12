@@ -125,9 +125,9 @@ export class HomePage implements OnInit {
       this.paymentIntentId = response.data.intent_id;
   
       // Si no hay planes, confirmamos el pago automáticamente
-      if (!this.availablePlans.length) {
-        this.confirmPayment();
-      }
+      // if (!this.availablePlans.length) {
+      //   this.confirmPayment();
+      // }
     } catch (error: any) {
       this.errorMessage = error.response?.data?.error || 'Error al procesar el pago';
     }

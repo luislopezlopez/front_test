@@ -4,14 +4,44 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
+<!-- <ion-content class="ion-padding">
   <div class="container">
     <form (submit)="createToken($event)">
+      <div id="card-element">
+      </div>
+      <ion-button expand="full" type="submit">Realizar pago</ion-button>
+    </form>
+    <ion-text color="danger" *ngIf="errorMessage">{{ errorMessage }}</ion-text>
+    <ion-text style="color: blue;" *ngIf="successMessage">¡Pago realizado!</ion-text>
+  </div>
+</ion-content> -->
+
+
+<ion-content class="ion-padding">
+  <div class="container">
+    <form (submit)="createPaymentIntent($event)">
       <div id="card-element">
         <!-- A Stripe Element will be inserted here. -->
       </div>
       <ion-button expand="full" type="submit">Realizar pago</ion-button>
     </form>
+
+    <!-- Planes de cuotas -->
+    <div id="plans" *ngIf="availablePlans.length > 0">
+      <p>Seleccione un plan de pago:</p>
+      <form id="installment-plan-form">
+        <label>
+          <input id="immediate-plan" type="radio" name="installment_plan" value="-1" checked /> Pago inmediato
+        </label>
+        <div *ngFor="let plan of availablePlans; let i = index">
+          <label>
+            <input type="radio" name="installment_plan" [value]="i" />{{ plan.count }} meses sin intereses
+          </label>
+        </div>
+      </form>
+      <ion-button expand="full" (click)="confirmPayment()">Confirmar pago</ion-button>
+    </div>
+
     <ion-text color="danger" *ngIf="errorMessage">{{ errorMessage }}</ion-text>
     <ion-text style="color: blue;" *ngIf="successMessage">¡Pago realizado!</ion-text>
   </div>

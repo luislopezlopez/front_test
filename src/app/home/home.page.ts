@@ -13,11 +13,13 @@ export class HomePage implements OnInit {
   card: any;
   errorMessage!: string;
   successMessage!: string;
-  jwtToken: string  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NmUxMTZlOGM0ZmQ0OTZkZWFjOTA4NGYiLCJpYXQiOjE3MjYxMjIyNjksImV4cCI6MTcyNjE4MjI2OX0.TcMaC65GqlQkLKy4LOEGax3vSNWH_34hoqcfO5CH_nI';
+  jwtToken: string  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NmUxMTZlOGM0ZmQ0OTZkZWFjOTA4NGYiLCJpYXQiOjE3MjY3NjA5MzAsImV4cCI6MTcyNjgyMDkzMH0.gELOvaNYLP24SYJ4ZyqVQdE8kGxGBV8sQvFneKP_lh8';
   availablePlans: any[] = [];
   paymentIntentId!: string;
 
-  constructor() {}
+  constructor() {
+    this.subscribeToSSE('66f4a3c1141be9cf56d26b20');
+  }
  
   ngOnInit() {
     // this.stripe = Stripe('pk_live_51IaO4AERAnFdCDEdShgU1UT2xaQbXQqnmfd2WfsMSuKnk8ahVuMlgbO991Oz1GIr54R3IRMgGCG3QTcCB9N0rz7800gmQzTx3s');
@@ -78,8 +80,9 @@ export class HomePage implements OnInit {
       const body = {
         token: token,
         paymentMethod: "stripe",
-        currency: 'MXN',
-        ...(addressId && { addressId }) // Solo incluir addressId si está presente
+        currency: 'USD',
+        ...(addressId && { addressId }),
+        country:'CA'
       };
   
       const response = await axios.post('http://localhost:3000/orders', body, {
@@ -113,24 +116,39 @@ export class HomePage implements OnInit {
       // Enviar el PaymentMethod y la moneda seleccionada al backend
       const response = await axios.post('http://localhost:3000/stripe/collect_details', {
         payment_method_id: paymentMethod.id,
-        currency: 'MXN',  // Moneda seleccionada (USD o MXN)
+        currency: 'USD',  // Moneda seleccionada (USD o MXN)
+        country:'CA'
       }, {
         headers: {
           'Authorization': `Bearer ${this.jwtToken}`,  // Token JWT para autenticar al usuario
         }
       });
-  
-      console.log(response.data);
       this.availablePlans = response.data.available_plans;
       this.paymentIntentId = response.data.intent_id;
-  
-      // Si no hay planes, confirmamos el pago automáticamente
-      // if (!this.availablePlans.length) {
-      //   this.confirmPayment();
-      // }
     } catch (error: any) {
       this.errorMessage = error.response?.data?.error || 'Error al procesar el pago';
     }
+  }
+  
+  
+  //LLAMADA GET PARA SUSCRIBIRME A EVENTOS SSE A ESTE ENDPOINT http://localhost:3000/sse/subscribe, debo mandar bearer token
+  subscribeToSSE(userId: string) {
+    const eventSource = new EventSource(`http://localhost:3000/sse/subscribe/${userId}`);
+  
+    // Escuchar el evento de mensaje recibido
+    eventSource.onmessage = (event) => {
+      console.log('Mensaje recibido:', event.data);
+    };
+  
+    // Escuchar errores en la conexión
+    eventSource.onerror = (error) => {
+      console.error('Error en la conexión SSE:', error);
+    };
+  
+    // Escuchar eventos personalizados si los hay
+    eventSource.addEventListener('custom-event', (event: any) => {
+      console.log('Evento personalizado recibido:', event.data);
+    });
   }
   
   
@@ -177,8 +195,9 @@ export class HomePage implements OnInit {
         paymentIntentId: this.paymentIntentId,
         selectedPlan: selectedPlan,  // Plan de cuotas o null si es pago directo
         paymentMethod: "stripe",
-        currency: "MXN",
-        addressId: "66e29beed5d913dcd265f048",  // Address ID, si es necesario
+        currency: "USD",
+        addressId: "66ea26921deb18305e21767d",
+        country: "CA"
       };
   
       // Realizar la solicitud al backend para crear la orden
